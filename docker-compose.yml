@@ -1,0 +1,36 @@
+﻿version: "0.1"
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "123"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: backend/.
+    container_name: backend 
+    depends_on:
+      - postgres
+    ports:
+      - '5002:8080'
+    environment:
+        ConnectionString: 'Host=postgres;Port=5432;CommandTimeout=300;Database=db;User Id=postgres;Password=123;'
+
+  frontend:
+    build: frontend2/.
+    container_name: frontend 
+    depends_on:
+      - backend
+    ports:
+      - '3000:3000'
+
+volumes:
+  postgres-data:
+
+  
